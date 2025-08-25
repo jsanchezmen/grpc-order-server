@@ -1,0 +1,42 @@
+syntax = "proto3";
+
+option go_package = "./go-src";
+
+message CreateOrderRequest {
+    string item_name = 1;
+}
+
+message CreateOrderResponse {
+    int64 order_id = 1;
+    string item_name = 2;
+    int64 created_at = 3;
+}
+
+message CreateListOrderRequest {
+    int64 orders_quantity = 1;
+}
+
+message CreateStreamOrderResponse {
+    repeated CreateOrderResponse orders = 1;
+    int64 total_orders_created = 2;
+}
+
+service Order {
+    // Simple RPC
+    rpc Create(CreateOrderRequest) returns (CreateOrderResponse);
+
+    // Server streaming RPC
+    // This is going to create an order each second if orders_quantity is set to 10
+    // ListOrders will create 10 orders 1 each second
+    rpc ListOrders(CreateListOrderRequest) returns (stream CreateOrderResponse);
+
+    // Client Streaming RPC
+    // This is going to create Multiples Orders
+    // after reading a stream request from the client.
+    rpc CreateStreamOrder(stream CreateOrderRequest) returns (CreateStreamOrderResponse);
+
+    // Bidirectional Streaming RPC
+    // This is going to read an CreateOrderRequest and then return  CreateOrderResponse 
+    rpc CreateBidirectionalStreamOrder(stream CreateOrderRequest) returns (stream CreateOrderResponse);
+}
+
