@@ -58,6 +58,12 @@ EOF
 
 ```
 
+## Build docker image
+
+```
+GOOS=linux GOARCH=amd64 go build -o grpc-order-server ./cmd
+```
+
 ## Useful Links
 
 - GRPC Request types
